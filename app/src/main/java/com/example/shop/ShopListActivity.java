@@ -69,7 +69,6 @@ public class ShopListActivity extends AppCompatActivity {
     private NotificationHelper mNotificationHelper;
     private AlarmManager mAlarmManager;
     private JobScheduler mJobScheduler;
-    private SharedPreferences preferences;
 
     private boolean viewRow = true;
 
@@ -87,20 +86,10 @@ public class ShopListActivity extends AppCompatActivity {
             finish();
         }
 
-        // preferences = getSharedPreferences(PREF_KEY, MODE_PRIVATE);
-        // if(preferences != null) {
-        //     cartItems = preferences.getInt("cartItems", 0);
-        //     gridNumber = preferences.getInt("gridNum", 1);
-        // }
-
-        // recycle view
         mRecyclerView = findViewById(R.id.recyclerView);
-        // Set the Layout Manager.
         mRecyclerView.setLayoutManager(new GridLayoutManager(
                 this, gridNumber));
-        // Initialize the ArrayList that will contain the data.
         mItemsData = new ArrayList<>();
-        // Initialize the adapter and set it to the RecyclerView.
         mAdapter = new ShoppingItemAdapter(this, mItemsData);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -113,13 +102,9 @@ public class ShopListActivity extends AppCompatActivity {
         filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
         this.registerReceiver(powerReceiver, filter);
 
-        // Intent intent = new Intent("CUSTOM_MOBALKFEJL_BROADCAST");
-        // LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
         mNotificationHelper = new NotificationHelper(this);
         mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         mJobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        // setAlarmManager();
         setJobScheduler();
     }
 
@@ -145,7 +130,6 @@ public class ShopListActivity extends AppCompatActivity {
     };
 
     private void initializeData() {
-        // Get the resources from the XML file.
         String[] itemsList = getResources()
                 .getStringArray(R.array.shopping_item_names);
         String[] itemsInfo = getResources()
@@ -155,9 +139,6 @@ public class ShopListActivity extends AppCompatActivity {
         TypedArray itemsImageResources =
                 getResources().obtainTypedArray(R.array.shopping_item_images);
         TypedArray itemRate = getResources().obtainTypedArray(R.array.shopping_item_rates);
-
-        // Create the ArrayList of Sports objects with the titles and
-        // information about each sport.
         for (int i = 0; i < itemsList.length; i++) {
             mItems.add(new ShoppingItem(
                  itemsList[i],
@@ -168,7 +149,6 @@ public class ShopListActivity extends AppCompatActivity {
                  0));
         }
 
-        // Recycle the typed array.
         itemsImageResources.recycle();
     }
 
@@ -187,7 +167,6 @@ public class ShopListActivity extends AppCompatActivity {
                 queryData();
             }
 
-            // Notify the adapter of the change.
             mAdapter.notifyDataSetChanged();
         });
     }
@@ -308,26 +287,8 @@ public class ShopListActivity extends AppCompatActivity {
 
     }
 
-    private void setAlarmManager() {
-        long repeatInterval = 60000; // AlarmManager.INTERVAL_FIFTEEN_MINUTES;
-        long triggerTime = SystemClock.elapsedRealtime() + repeatInterval;
-
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        mAlarmManager.setInexactRepeating(
-                AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                triggerTime,
-                repeatInterval,
-                pendingIntent);
-
-
-        mAlarmManager.cancel(pendingIntent);
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setJobScheduler() {
-        // SeekBar, Switch, RadioButton
         int networkType = JobInfo.NETWORK_TYPE_UNMETERED;
         Boolean isDeviceCharging = true;
         int hardDeadline = 5000; // 5 * 1000 ms = 5 sec.
@@ -340,9 +301,5 @@ public class ShopListActivity extends AppCompatActivity {
 
         JobInfo jobInfo = builder.build();
         mJobScheduler.schedule(jobInfo);
-
-        // mJobScheduler.cancel(0);
-        // mJobScheduler.cancelAll();
-
     }
 }
